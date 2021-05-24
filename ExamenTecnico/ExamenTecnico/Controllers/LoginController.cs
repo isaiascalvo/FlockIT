@@ -1,6 +1,7 @@
 ﻿using ExamenTecnico.Models;
 using ExamenTecnico.Services;
 using Microsoft.AspNetCore.Mvc;
+using NLog;
 using System;
 using System.Threading.Tasks;
 
@@ -20,6 +21,8 @@ namespace ExamenTecnico.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] Login login)
         {
+            Log.Instance.Info("Entering the Login Controller. Login method.");
+
             var response = new Response<User>();
             try
             {
@@ -27,6 +30,7 @@ namespace ExamenTecnico.Controllers
                 response.IsSuccessfully = response.Result != null;
                 response.ErrorMessage = response.Result == null ? "Usuario o contraseña incorrectos" : null;
 
+                Log.Instance.Info(response.IsSuccessfully ? "Exit Login Controller. Login success." : "Exit Login Controller. Login failed.");
                 return Ok(response);
             }
             catch (Exception ex)
@@ -35,6 +39,7 @@ namespace ExamenTecnico.Controllers
                 response.IsSuccessfully = false;
                 response.ErrorMessage = ex.Message;
 
+                Log.Instance.Info("Exit Login Controller. Login failed with exception.");
                 return BadRequest(response);
             }
         }
